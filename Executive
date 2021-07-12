@@ -1,0 +1,601 @@
+import os,forms_1_3,forms_2_4,forms_5_7,forms_6_8,forms_9_11,forms_10_12,forms_13_15,forms_14_16,form_17,form_18,form_19,form_20,form_21,form_22,form_23,form_24
+from PyQt5 import QtWidgets, QtCore
+from openpyxl import load_workbook
+import xlwings, subprocess, pr_fl_constructor, Converter, simplejson
+
+class exec_functions:
+    def comb(self):
+        combinations={} #идентификатор-номер листа excel
+        combinations["Комбинированный буфер;Эффективность жидкости;Ступени;Устьевое"]=5
+        combinations["Комбинированный буфер;Эффективность жидкости;Ступени;Забойное"]=1
+        combinations["Комбинированный буфер;Эффективность жидкости;Рамп;Устьевое"]=7
+        combinations["Комбинированный буфер;Эффективность жидкости;Рамп;Забойное"]=3
+        combinations["Комбинированный буфер;Долю от объема смеси (вручную);Ступени;Устьевое"]=6
+        combinations["Комбинированный буфер;Долю от объема смеси (вручную);Ступени;Забойное"]=2
+        combinations["Комбинированный буфер;Долю от объема смеси (вручную);Рамп;Устьевое"]=8
+        combinations["Комбинированный буфер;Долю от объема смеси (вручную);Рамп;Забойное"]=4
+        combinations["Один тип жидкости на буфере;Эффективность жидкости;Ступени;Устьевое"]=13
+        combinations["Один тип жидкости на буфере;Эффективность жидкости;Ступени;Забойное"]=9
+        combinations["Один тип жидкости на буфере;Эффективность жидкости;Рамп;Устьевое"]=15
+        combinations["Один тип жидкости на буфере;Эффективность жидкости;Рамп;Забойное"]=11
+        combinations["Один тип жидкости на буфере;Долю от объема смеси (вручную);Ступени;Устьевое"]=14
+        combinations["Один тип жидкости на буфере;Долю от объема смеси (вручную);Ступени;Забойное"]=10
+        combinations["Один тип жидкости на буфере;Долю от объема смеси (вручную);Рамп;Устьевое"]=16
+        combinations["Один тип жидкости на буфере;Долю от объема смеси (вручную);Рамп;Забойное"]=12
+        combinations["Комбинированный буфер;Эффективность жидкости;Рамп с полкой;Забойное"]=17
+        combinations["Комбинированный буфер;Долю от объема смеси (вручную);Рамп с полкой;Забойное"]=18
+        combinations["Один тип жидкости на буфере;Эффективность жидкости;Рамп с полкой;Забойное"]=19
+        combinations["Один тип жидкости на буфере;Долю от объема смеси (вручную);Рамп с полкой;Забойное"]=20
+        combinations["Комбинированный буфер;Эффективность жидкости;Рамп с полкой;Устьевое"]=21
+        combinations["Комбинированный буфер;Долю от объема смеси (вручную);Рамп с полкой;Устьевое"]=22
+        combinations["Один тип жидкости на буфере;Эффективность жидкости;Рамп с полкой;Устьевое"]=23
+        combinations["Один тип жидкости на буфере;Долю от объема смеси (вручную);Рамп с полкой;Устьевое"]=24
+        return combinations
+    
+    def proppants(self):
+        proppants={}
+        proppants['BP_1620']=["{10a1f3cb-608a-32cd-a805-2f62964e1d9c}",3110]
+        proppants['BPR2040']=["{a1230b64-1e2e-3f07-bdee-672af32ca796}",2950]
+        proppants['16/20 Новатэк']=["{97c8364f-a476-355d-9145-698f508dc474}",2700]
+        proppants['20/40 Mecami']=["{cc659530-6810-3e30-8c47-247bee2a162e}",3200]
+        proppants['20/40 Новатэк']=["{51427911-9b87-30ee-9415-85a69c4bc268}",2780]
+        proppants['BP_3060']=["{16e1892d-b5c3-3264-b11a-1d82d35c8c4b}",3150]
+        proppants['BP2040_']=["{55735742-6beb-3d1e-b6fc-8c3fe7cdefb3}",3110]
+        proppants['FP 16/20']=["{dcb0b586-cbb4-365c-90b4-8d44a91dc14f}",2780]
+        proppants['FP_20/40']=["{dc0520e3-18c0-3b1c-87d0-5378da863b7d}",2820]
+        proppants['BP1218_']=["e5166fb0-2546-315b-bd38-df79208d8089",3080]
+        proppants['BP1420_']=["{b8b30b91-bc70-32a3-b729-5ce6ad18c594}",3070]
+        proppants['BP1620_']=["{2458d4c3-a6be-300f-b7c5-a6329f45533c}",3700]
+        proppants['BP1630S']=["{349f393c-134a-3ef8-870d-0611e8f4f924}",3000]
+        proppants['BP1630_']=["{bb048ba9-1b6a-38b4-9cd1-f2aef444c8b7}",3090]
+        proppants['BP2040S']=["{51211302-3e21-3af8-802b-7c1be6ce182a}",3000]
+        proppants['BP3060_']=["{ee381801-1bb6-358d-8091-784081f3665f}",3100]
+        proppants['BPR1218']=["{d13a6a1d-2152-3a0a-9b33-a7588ed06003}",2900]
+        proppants['BPR1620']=["{5919ebdf-6305-3c99-b58e-8cb255c8e076}",2880]
+        proppants['BPR1630']=["{b3af4e21-7335-3608-9901-7f48f83938cb}",2960]
+        proppants['BPR2040']=["{a1230b64-1e2e-3f07-bdee-672af32ca796}",2950]
+        proppants['BP_1218']=["{bb81ac18-76e7-3845-899b-4075c8e16ff6}",3060]
+        proppants['BP_1630']=["{d0fc657c-ea65-325e-9ada-030045e5ffd6}",3120]
+        proppants['BP_2040']=["{a3b21914-a475-38e8-9320-19ca350fe75f}",3120]
+        proppants['BP_3060']=["{16e1892d-b5c3-3264-b11a-1d82d35c8c4b}",3150]
+        proppants['BR128R1']=["{4e2efded-b64e-3a3f-99f0-d05a5f9f2c45}",2890]
+        proppants['BR128R2']=["{bedfb0f0-3881-35a6-a047-a8968d9d8f85}",2920]
+        proppants['BR162R1']=["{8e6654bb-a43f-36be-9885-09bbb41684ba}",2950]
+        proppants['BR162R2']=["{3839cbc1-6835-3fae-b29e-fb6e10d30229}",2900]
+        return proppants
+    
+    def liquids(self):
+        liquids={}
+        liquids['FR01']=["{85725995-5a40-33a2-aee5-cb17af30d4d3}",1010]
+        liquids['LG14']=["{7463eebf-f6fc-391d-9975-a0362b3548e9}",1010]
+        liquids['LG16']=["{962537e3-881b-3dc8-a259-de43b1babd06}",1010]
+        liquids['LG18']=["{99fb83a5-641c-3d5d-80fd-f1ef9a14f235}",1010]
+        liquids['LG20']=["{76aee5c8-865a-38dd-8a09-27f7e47990ad}",1010]
+        liquids['LG22']=["{a6a1401e-1097-3c39-8e59-ec46e3983ab8}",1010]
+        liquids['LG24']=["{6b42a1db-1981-3651-a41c-6465d6fce47d}",1010]
+        liquids['LG26']=["{bf40893e-c8e3-318a-8c91-3bfefd06d992}",1010]
+        liquids['LG28']=["{8a263383-9192-3500-825a-f2267c4bb53a}",1010]
+        liquids['LG30']=["{839a7164-3dd4-3302-bd27-cfd87ee8f30a}",1010]
+        liquids['LG32']=["{efb410cb-3528-3f29-8e7c-f78998c5ccec}",1010]
+        liquids['LG34']=["{b8ba679f-c9cc-373c-bcb0-0af72fea1288}",1010]
+        liquids['LG36']=["{b6757de1-4a2c-3bcf-beb5-16fa188535c0}",1010]
+        liquids['LG38']=["{ebd3ac88-0c92-3d27-b24d-7a66c32dd444}",1010]
+        liquids['LG40']=["{0a39ada5-2d3a-3555-8152-5293a6d35e6f}",1010]
+        liquids['LG42']=["{571b03f6-56ec-3737-992d-a0fcb9cdae0c}",1010]
+        liquids['LG48']=["{9b41bc9b-7d10-3f77-adfd-6c6e16e73320}",1010]
+        liquids['LG60']=["{69b509c2-f5fa-343a-bdb9-d818aa7fc3fe}",1010]
+        liquids['LG72']=["{0ac06ea0-9c63-32bf-847c-787c7b3dfa5d}",1010]
+        liquids['DX14']=["{c11c3e11-a00a-3813-938f-a84dbdf87a42}",1010]
+        liquids['DX16']=["{4e26de0a-d442-3dc9-a29b-a485f593cbd1}",1010]
+        liquids['DX18']=["{3195014a-fbb3-3246-b4de-1e5bf887ed5c}",1010]
+        liquids['DX20']=["{38f40710-f8fd-3805-b9b2-9ad8b7be0dc6}",1010]
+        liquids['DX22']=["{55503588-20a4-3841-94c1-d780fb851d33}",1010]
+        liquids['DX24']=["{33b6bf55-0dd0-3bdd-bb89-c0f4e3b3ee1d}",1010]
+        liquids['DX26']=["{c5544eaa-6d83-37b5-a6fe-5f30811fde78}",1010]
+        liquids['DX28']=["{a1e9c276-ccea-34bf-b24f-53f3f023984e}",1010]
+        liquids['DX30']=["{239de53d-f6a2-3f4f-b111-6f30e627cd42}",1010]
+        liquids['DX32']=["{30f09cfe-8648-38f1-b647-3e455e24e728}",1010]
+        liquids['DX34']=["{113a8c40-13c9-30ab-bd9d-b2840f0b7bcf}",1010]
+        liquids['DX36']=["{440bf3e9-7cf5-3e37-a0e8-a267956edd9b}",1010]
+        liquids['DX38']=["{e48b7838-3774-3afc-982e-61b3d50abbe7}",1010]
+        liquids['DX40']=["{0c9cac70-aae2-34e0-989d-8fd5f3526492}",1010]
+        liquids['DX42']=["{4c161982-7b31-3dfa-a185-5593aaf6d5a7}",1010]
+        liquids['DX48']=["{aa212f1e-a548-3975-a17c-4f6ca7953383}",1010]
+        liquids['H2O1']=["{bcd77197-a07a-359e-9fa1-c044d5d97dd3}",1010]
+        return liquids
+    
+    def file_path(self):
+       return os.getcwd() #определили нашу текущущю позицию
+        
+    def input_data_determ(self,radio_Buttons):
+        for radio_Button in radio_Buttons:
+            if radio_Button.isChecked():
+                output=radio_Button.text()
+        return output
+   
+    def out_excel_sheet_id_determ(self,row_combination):
+        out_excel_sheet_id=[]
+        for key in self.comb():
+            if row_combination==key:
+                out_excel_sheet_id.append(self.comb()[key]-1)
+        #номер листа - соответствующее число строк
+        sheet_nrows={0:24,1:23,2:24,3:23,4:24,5:23,6:24,7:23,8:20,9:20,10:20,11:20,12:20,13:20,14:20,15:20,16:25,17:24,18:21,19:21,20:25,21:24,22:21,23:21}
+        out_excel_sheet_id.append(sheet_nrows[out_excel_sheet_id[0]])
+        return out_excel_sheet_id 
+   
+    def excel_reading(self,excel_path,sheet_number,nrows):
+        #запомним путь и лист с числом строк:
+        #не знаю, почему через self не получается
+        exec_functions.READED_path=excel_path
+        exec_functions.READED_sh_n=sheet_number
+        exec_functions.READED_nrows=nrows
+        #откроем рабочую книгу:
+        workbook=load_workbook(filename=excel_path,read_only=True)
+        #откроем нужный лист:
+        #workbook.sheetnames - список имен листов
+        worksheet=workbook[workbook.sheetnames[sheet_number]]
+        excel_data_dict={}
+        #в openpyxl нумерация с 1, а не с 0
+        for i in range(3,nrows):
+            key=worksheet.cell(row=i,column=2).value
+            excel_data_dict[key]=worksheet.cell(row=i,column=3).value
+        for key in excel_data_dict:
+            if key=="Буфер 2, %":
+                excel_data_dict[key]=100-excel_data_dict["Буфер 1, %"]
+        workbook.close()
+        return excel_data_dict #возвращает список считанных данных
+
+
+
+    def qt_form_open(self,ui_form,data_dict,excel_sh_index):
+        keys=[]
+        for key in data_dict:
+            keys.append(key)
+        Dialog=QtWidgets.QDialog()
+        self.qt_form=ui_form.Ui_Form()
+        self.qt_form.setupUi(Dialog)
+        indexes=[] #позиции количественных данных, что в таблице
+        for row in range(0,self.qt_form.tableWidget.rowCount()):
+            if self.qt_form.tableWidget.verticalHeaderItem(row).text() in keys:
+                indexes.append(keys.index(self.qt_form.tableWidget.verticalHeaderItem(row).text()))
+        for i in range(0,len(indexes)):
+            self.qt_form.tableWidget.item(i,0).setText(str(data_dict[keys[indexes[i]]]))
+        qual_indexes=[] #позиции качественных данных
+        for i in range(0,len(keys)):
+            if not(i in indexes):
+                qual_indexes.append(i)
+        #на листах 1 - 16 тип жидкости 3 занимает строку под номером 13
+        #на листах 17 - 24 тип жидкости 3 занимает строку под номером 14
+        if excel_sh_index<17:
+            static_qual=qual_indexes[:qual_indexes.index(10)+1]
+        elif excel_sh_index>=17:
+            static_qual=qual_indexes[:qual_indexes.index(11)+1]
+        static_qual_values=[]
+        for el in static_qual:
+            static_qual_values.append(data_dict[keys[el]])
+        #нужные нам комбоБоксы:
+        comboBoxes=[self.qt_form.comboBox,self.qt_form.comboBox_2,self.qt_form.comboBox_3,self.qt_form.comboBox_4,self.qt_form.comboBox_5]
+        counter=0
+        for Box in comboBoxes:
+            #ищем нужную нам запись из excel
+            pos=Box.findText(static_qual_values[counter])
+            #если нашли, то выбираем ее
+            if pos>=0:
+                Box.setCurrentIndex(pos)
+            elif pos<0:
+                print("Такого пропанта/типа жидкости нет в базе")
+            counter+=1
+        #все остальные параметры, которые нужно выбирать, а не вводить
+        if excel_sh_index<17:
+            dynamic_qual=qual_indexes[qual_indexes.index(10)+1:]
+        elif excel_sh_index>=17:
+            dynamic_qual=qual_indexes[qual_indexes.index(11)+1:]
+        dynamic_qual_values=[]
+        for el in dynamic_qual:
+            dynamic_qual_values.append(data_dict[keys[el]])
+        #нужно списать данные с excel для остальных боксов
+        if len(dynamic_qual)==3:
+            self.comboBoxes_remaining=[self.qt_form.comboBox_6,self.qt_form.comboBox_7,self.qt_form.comboBox_8]
+        elif len(dynamic_qual)==2:
+            self.comboBoxes_remaining=[self.qt_form.comboBox_6,self.qt_form.comboBox_8]
+        counter=0
+        for Box in self.comboBoxes_remaining:
+            pos=Box.findText(dynamic_qual_values[counter])
+            if pos>=0:
+                Box.setCurrentIndex(pos)
+            counter+=1
+        self.qt_form.pushButton.clicked.connect(self.ui_form_btnClicked)
+        self.qt_form.tableWidget.itemChanged.connect(self.ui_form_tableChanged)
+        Dialog.exec()
+        if self.qt_form.pushButton.text()=="Выполнено":
+            exec_functions.callback="success"
+        else:
+            exec_functions.callback="failure"
+             
+    
+    
+    def excel_filling(self,data_dict_quan,data_dict_qual):
+        keys_quan=[]
+        for key in data_dict_quan:
+            keys_quan.append(key)
+        keys_qual=[]
+        for key in data_dict_qual:
+            keys_qual.append(key)
+        #рабочая книга:
+        workbook=load_workbook(filename=exec_functions.READED_path,read_only=False)
+        #рабочий лист:
+        worksheet=workbook[workbook.sheetnames[self.READED_sh_n]]
+        indexes_quan=[] #позиции количественных данных, что в таблице
+        indexes_qual=[] #позиции качественных данных, что НЕ в таблице
+        for i in range(3,self.READED_nrows):
+            if worksheet.cell(row=i,column=2).value in keys_quan:
+                indexes_quan.append(i)
+            if worksheet.cell(row=i,column=2).value in keys_qual:
+                indexes_qual.append(i)
+        for index in range(0,len(indexes_quan)):
+            worksheet.cell(row=indexes_quan[index],column=3).value=data_dict_quan[keys_quan[index]]
+        for index in range(0,len(indexes_qual)):
+            worksheet.cell(row=indexes_qual[index],column=3).value=data_dict_qual[keys_qual[index]]
+        workbook.save(self.READED_path)
+        workbook.close()
+      
+    def ui_form_tableChanged(self,item):
+        row=item.row()
+        col=item.column()
+        row_header_name=self.qt_form.tableWidget.verticalHeaderItem(row).text()
+        value=float(item.text())
+        if row_header_name=="Буфер 1, %":
+            self.qt_form.tableWidget.item(row+1,col).setText(str(100-value))
+    
+    def ui_form_btnClicked(self):
+        output_dict_quan={} #словарь с количественной информацией, которая пойдет в excel
+        for row in range(0,self.qt_form.tableWidget.rowCount()):
+            key=self.qt_form.tableWidget.verticalHeaderItem(row).text()
+            output_dict_quan[key]=float(self.qt_form.tableWidget.item(row,0).text())
+        output_dict_qual={} #словарь с качественной информацией, которая пойдет в excel
+        keys_static=[self.qt_form.label.text(),self.qt_form.label_2.text(),self.qt_form.label_3.text(),self.qt_form.label_4.text(),self.qt_form.label_5.text()]
+        comboBoxes_static=[self.qt_form.comboBox,self.qt_form.comboBox_2,self.qt_form.comboBox_3,self.qt_form.comboBox_4,self.qt_form.comboBox_5]
+        for i in range(0,len(keys_static)):
+            output_dict_qual[keys_static[i]]=comboBoxes_static[i].currentText()
+        if len(self.comboBoxes_remaining)==3:
+            keys=[self.qt_form.label_6.text(),self.qt_form.label_7.text(),self.qt_form.label_8.text()]
+        elif len(self.comboBoxes_remaining)==2:
+            keys=[self.qt_form.label_6.text(),self.qt_form.label_8.text()]
+        for i in range(0,len(keys)):
+            output_dict_qual[keys[i]]=self.comboBoxes_remaining[i].currentText()
+        self.excel_filling(output_dict_quan,output_dict_qual)
+        self.qt_form.pushButton.setStyleSheet('QPushButton {background-color: green; color: white;}')
+        self.qt_form.pushButton.setText(QtCore.QCoreApplication.translate("MainWindow", "Выполнено"))
+            
+    def input_qt_form_determ(self,row_combination,input_data):
+        #словарь с привязками к формам:
+        data_dict={1:forms_1_3,2:forms_2_4,3:forms_1_3,4:forms_2_4,5:forms_5_7,6:forms_6_8,7:forms_5_7,8:forms_6_8,
+                   9:forms_9_11,10:forms_10_12,11:forms_9_11,12:forms_10_12,13:forms_13_15,14:forms_14_16,
+                   15:forms_13_15,16:forms_14_16,17:form_17,18:form_18,19:form_19,20:form_20,21:form_21,22:form_22,23:form_23,24:form_24} 
+        for key in self.comb():
+            if row_combination==key:
+                self.qt_form_open(data_dict[self.comb()[key]],input_data,self.comb()[key])
+            
+                
+    def output_excel_reading(self):
+        #если мы успешно переписали excel и закрыли его:
+        if exec_functions.callback=="success":
+            #сначала нужно пересохрнаить файл из-под ОС Windows для кеширования данных
+            #это позволяет сделать xlwings
+            #откроем процесс
+            app=xlwings.App(visible=False)
+            #откроем книгу
+            excel_book=app.books.open(exec_functions.READED_path)
+            #просто сохарним ее
+            excel_book.save()
+            #звершим процесс (закроем книгу)
+            app.kill()
+            workbook=load_workbook(filename=exec_functions.READED_path,data_only=True)
+            worksheet=workbook[workbook.sheetnames[self.READED_sh_n]]
+            keys=[]
+            for j in range(8,21):
+                keys.append( worksheet.cell(row=3,column=j).value)
+            counter=0
+            for i in range(4,100):
+                if worksheet.cell(row=i,column=8).value=="-":
+                    break
+                else:
+                    counter+=1
+            data={}
+            #столбцы с числами, а не строками
+            numeric_values_cols=[9,10,11,12,15,16,17,18,19,20]
+            for k in range(0,len(keys)):
+                data[keys[k]]=[]
+            for j in range(8,21):
+                for i in range(4,4+counter):
+                    if worksheet.cell(row=i,column=j).value==None:
+                        data[keys[j-8]].append("")
+                    else:
+                        if j in numeric_values_cols:
+                            #численные значения, НО тут еще могут быть тире
+                            if worksheet.cell(row=i,column=j).value=="-":
+                                data[keys[j-8]].append(worksheet.cell(row=i,column=j).value)
+                            else:
+                                data[keys[j-8]].append(round(float(worksheet.cell(row=i,column=j).value),3))
+                        else:
+                            #строковые значения
+                            data[keys[j-8]].append(str(worksheet.cell(row=i,column=j).value))
+            workbook.close()
+            return data, counter
+        elif exec_functions.callback=="failure":
+            return ("Nothing","Nothing")
+    
+    def json_reading(self,json_path):
+        #для начала выудим из проекта json под солвер
+        data_grp=Converter.converter().convert(json_path)
+        #для дебага файл сохраним в ОС
+        with open(f"{json_path[:json_path.rindex('/')]}/f_s_init.json",'w') as file:
+            #очень важно использовать simplejson,чтобы справитсья с NaN'анми
+            simplejson.dump(data_grp,file,allow_nan=False,ignore_nan=True)
+        return data_grp
+    
+    
+    def key_find(self,input_dict,variable):
+        counter=0
+        position=0
+        for el in input_dict.values():
+            if variable in el:
+                position=counter
+            counter+=1
+        return list(input_dict.keys())[position]
+        
+    def json_treatment(self,data_grp,sch_frame):
+        #работаем без кислотки
+        if data_grp['Design']['Stages'][0]['Acid']==False:
+            #пока что берем ПО УМОЛЧАНИЮ LG16
+            fluid_in_well="{76aee5c8-865a-38dd-8a09-27f7e47990ad}" #жидкость в скважине
+            data_grp['Design']['Stages'][0]['Fluid']=fluid_in_well
+            data_grp['FluidBase']=pr_fl_constructor.constructor().fluid_section(sch_frame,fluid_in_well)
+            data_grp['ProppantBase']=pr_fl_constructor.constructor().prop_section(sch_frame)
+            acid_type=""
+            acid_conc=0
+            diff_coef_mult=0
+            acid_eq_conc=0
+            #пока что коэффициенты трения и утечек сделаем по умолчанию (равными 1)
+            K_friction, CL, SP=1,1,1
+            #расписание закачки представляет собой список двенадцати списков
+            #список - это набор информации по стадии
+            #в каждом из списков 25 элементов
+            #в эталонном расписании остются неизменными пункты: 9,10,11,12,22,23,24
+            #из сгенерированного расписания берутся: 0 - 8, 13 - 16
+            #пересчитываются: 17 - 21
+            total_pump_time=0 #общее время закачки
+            for key in sch_frame:
+                total_pump_time+=sch_frame[key][1]
+                sch_frame[key].insert(9, acid_type)
+                sch_frame[key].insert(10,acid_conc)
+                sch_frame[key].insert(11,diff_coef_mult)
+                sch_frame[key].insert(12,acid_eq_conc)
+                sch_frame[key].insert(17,total_pump_time)
+                if sch_frame[key][0]['value']['258']=="proppant":
+                    Vprop=sch_frame[key][13]/self.proppants()[self.key_find(self.proppants(),sch_frame[key][6])][1]
+                elif sch_frame[key][0]['value']['258']!="proppant":
+                    Vprop=0
+                sch_frame[key].insert(18,Vprop) #объем пропанта
+                Mfl=sch_frame[key][4]*self.liquids()[self.key_find(self.liquids(),sch_frame[key][5])][1]
+                sch_frame[key].insert(19,Mfl) #масса жидкости
+                Qfl=sch_frame[key][4]/(sch_frame[key][1])
+                sch_frame[key].insert(20,Qfl) #расход жидкости
+                Qprop=Vprop/sch_frame[key][1]
+                sch_frame[key].insert(21,Qprop) #расход пропанта
+                sch_frame[key].insert(22,K_friction) #коэф-т трения
+                sch_frame[key].insert(23,CL) #коэф-т утечек
+                sch_frame[key].insert(24,SP) #еще коэф-т утечек
+            #в json эта структура представляет собой список, а не словарь
+            sch_frame=list(sch_frame.values())
+            data_grp['Design']['name']="Design_changed"
+            data_grp['Design']['Stages'][0]['UserPumpingSchedule']['data']=sch_frame
+            data_grp['Design']['Stages'][0]['UserPumpingSchedule']['rowCount']=len(sch_frame)
+            return data_grp
+        
+    def out_qt_form_filling(self,data,ui_form,nrows,json_path):
+        
+        def _check(value,header,temp_list):
+            #численные 
+            nulls=["Qсм, м3/мин","Vсмесь, м3","V жид, м3","Спропант (от) кг/м3","Спропант (до) кг/м3","Mпропант, кг","∑Мпропант., кг","∑Vжид., м3","∑Vсмесь., м3"]
+            #не численные
+            not_nulls=["Тип стадии","Жидкость","Пропант"]
+            stages={'Буфер':'buffer','Пропант':'proppant','Продавка':'overflush','Остановка':'stop'}
+            if header in nulls:
+                if value=='-' or value=='':
+                    temp_list.append(0)
+                else:
+                    if header=='Qсм, м3/мин':
+                        temp_list.append(float(value)/60)
+                    else:
+                        temp.append(float(value))
+            elif header in not_nulls:
+                if value=='-' or value=='':
+                    temp_list.append("")
+                else:
+                    if header==not_nulls[1]: #если жидкость
+                        temp_list.append(self.liquids()[value][0])
+                    elif header==not_nulls[2]: #если пропант
+                        temp_list.append(self.proppants()[value][0])
+                    else: #если тип стадии
+                        el={'value':{'2':value,'258':stages[value]}}
+                        temp_list.append(el)
+            else:
+                temp_list.append(float(value)*60)
+        
+        if exec_functions.callback=="success":
+            Dialog=QtWidgets.QDialog()
+            out_qt_form=ui_form.Ui_Form()
+            out_qt_form.setupUi(Dialog)
+            #зададим число строк в выходной таблице
+            out_qt_form.tableWidget.setRowCount(nrows)
+            #не забываем поместить пустые значения во все ячейки вместо None
+            for col in range(0,13):
+                for row in range(0,nrows):
+                    #создадим пустой item и поместим его в центр ячейки
+                    item = QtWidgets.QTableWidgetItem()
+                    item.setTextAlignment(QtCore.Qt.AlignCenter)
+                    item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsUserCheckable)
+                    out_qt_form.tableWidget.setItem(row,col,item)
+                    #значение берется с словаря data для соответствующего ключа - заголовка столбца таблицы
+                    item_value=data[out_qt_form.tableWidget.horizontalHeaderItem(col).text()][row]
+                    out_qt_form.tableWidget.item(row,col).setText(str(item_value))
+                    
+            #ниже пойдет преобразование табличного расписания под иерархию json
+            d={}
+            for row in range(0,nrows):
+                temp=[]
+                for col in range(0,13):
+                    header=out_qt_form.tableWidget.horizontalHeaderItem(col).text() #заголовок
+                    item_value=out_qt_form.tableWidget.item(row,col).text() #значение в ячейке
+                    _check(item_value,header,temp)
+                d[row]=temp
+            #обработка старого пускового json и получение нового
+            new_JS_data=self.json_treatment(self.json_reading(json_path), d)
+            #выгрузка нового пускового json в папку для возможного debug'а
+            dir_path=json_path[:json_path.rindex("/")] #папка
+            with open(f"{dir_path}/new_f_s_init.json",'w') as new_js_file:
+                simplejson.dump(new_JS_data,new_js_file,allow_nan=False,ignore_nan=True)
+            
+
+            
+            #функция выгрузки в json/cfrac, к которой будем привязывать кнопку
+            def json_dumping():
+                with open(f"{dir_path}/new_project.json",'w') as new_project:
+                    simplejson.dump(Converter.converter().new_proj(json_path, f"{dir_path}/new_f_s_init.json"),new_project,allow_nan=False,ignore_nan=True)
+                '''with open(f"{dir_path}/RESULT.json",'r') as result_file:
+                    result=json.load(result_file) #зачитали результат расчета
+                with open(f"{dir_path}/new_project.json",'w') as result_project:
+                    simplejson.dump(Converter.converter().proj(json_path, result),result_project,allow_nan=False,ignore_nan=True)'''
+                out_qt_form.pushButton.setStyleSheet('QPushButton {background-color: green; color: white;}')
+                out_qt_form.pushButton.setText(QtCore.QCoreApplication.translate("MainWindow", "Выполнено"))
+                
+            
+            def model_calculation():
+                console_path=QtWidgets.QFileDialog.getOpenFileName(Dialog,'Укажите путь к консоли CyberFrac',os.getcwd())[0]
+                with open(f"{dir_path}/new_fracture_solver_init.json","w") as file:
+                    simplejson.dump(new_JS_data,file,allow_nan=False,ignore_nan=True)
+                cmd=f'{console_path} {dir_path}/new_fracture_solver_init.json "{dir_path}/RESULT.json"'
+                with subprocess.Popen(cmd, shell=True,stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as proc:
+                    proc.stdin.write(b"")
+                    stdout,stderr=proc.communicate()
+                out_qt_form.pushButton.setStyleSheet('QPushButton {background-color: green; color: white;}')
+                out_qt_form.pushButton.setText(QtCore.QCoreApplication.translate("MainWindow", "Выполнено"))
+                out_qt_form.pushButton.setEnabled(True)
+                
+            out_qt_form.pushButton.clicked.connect(json_dumping)
+           
+            Dialog.exec()
+        else:
+            pass
+    def gen_set(self,ui_form):
+        Dialog=QtWidgets.QDialog()
+        gen_set_form=ui_form.Ui_Form()
+        gen_set_form.setupUi(Dialog)
+        Dialog.exec()
+        def values_list(minimum,maximum,step):
+            values_list=[]
+            while minimum<maximum:
+                values_list.append(minimum)
+                minimum+=step
+            values_list.append(maximum)
+            return values_list
+        #зачитаем значения по тоннажу
+        tonnage_values=values_list(float(gen_set_form.lineEdit.text()), float(gen_set_form.lineEdit_2.text()), float(gen_set_form.lineEdit_7.text()))
+        return tonnage_values
+        #xl_sh_number=self.comb()[row_combination]
+    
+    def data_set_making(self,data,tonnage_values):
+        data_set=[]
+        data_keys=list(data.keys()) #список ключей в словаре
+        for i in range(0,len(tonnage_values)):
+            temp={}
+            temp['Общая масса пропанта на работу']=tonnage_values[i]
+            #сформируем остаток
+            for j in range(1,len(data_keys)):
+                temp[data_keys[j]]=data[data_keys[j]]
+            data_set.append(temp)
+        return data_set
+    
+    def sch_set_making(self,input_dataset):
+        sch_dataset=[]
+        for i in range(0,len(input_dataset)):
+            #открываем книгу
+            workbook=load_workbook(filename=exec_functions.READED_path,read_only=False)
+            #откроем нужный лист:
+            #workbook.sheetnames - список имен листов
+            worksheet=workbook[workbook.sheetnames[exec_functions.READED_sh_n]]
+            xl_row=3
+            #внесем изменения в эксель
+            for key in input_dataset[i]:
+                if worksheet.cell(row=xl_row,column=2).value==key:
+                  worksheet.cell(row=xl_row,column=3).value=input_dataset[i][key]
+            #закроем и сохраним эксель
+            workbook.save(exec_functions.READED_path)
+            workbook.close()
+            #теперь нужно пересохранить файл из-под ОС Windows для кеширования данных
+            #это позволяет сделать xlwings
+            #откроем процесс
+            app=xlwings.App(visible=False)
+            #откроем книгу
+            excel_book=app.books.open(exec_functions.READED_path)
+            #просто сохарним ее
+            excel_book.save()
+            #звершим процесс (закроем книгу)
+            app.kill()
+            workbook=load_workbook(filename=exec_functions.READED_path,data_only=True)
+            worksheet=workbook[workbook.sheetnames[self.READED_sh_n]]
+            #зачитаем расписание закачки
+            keys=[]
+            for j in range(8,21):
+                keys.append( worksheet.cell(row=3,column=j).value)
+            counter=0
+            for i in range(4,100):
+                if worksheet.cell(row=i,column=8).value=="-":
+                    break
+                else:
+                    counter+=1
+            data={}
+            #столбцы с числами, а не строками
+            numeric_values_cols=[9,10,11,12,15,16,17,18,19,20]
+            for k in range(0,len(keys)):
+                data[keys[k]]=[]
+            for j in range(8,21):
+                for i in range(4,4+counter):
+                    if worksheet.cell(row=i,column=j).value==None:
+                        data[keys[j-8]].append("")
+                    else:
+                        if j in numeric_values_cols:
+                            #численные значения, НО тут еще могут быть тире
+                            if worksheet.cell(row=i,column=j).value=="-":
+                                data[keys[j-8]].append(worksheet.cell(row=i,column=j).value)
+                            else:
+                                data[keys[j-8]].append(round(float(worksheet.cell(row=i,column=j).value),3))
+                        else:
+                            #строковые значения
+                            data[keys[j-8]].append(str(worksheet.cell(row=i,column=j).value))
+            workbook.close()
+            sch_dataset.append(data)
+        return sch_dataset
+            
+         
+
+        
+    
+
+        
+        
+        
+    
+
+    
+
+        
+    
+
+        
+        
+        
+if __name__ == "__main__":
+    path=exec_functions().file_path()
+    print(path)
