@@ -6,5 +6,5 @@ Tasks: make tool, which helps connect the set of hydraulic fracturing schedules,
 Subtasks:
 1) Userfriendly interface.
 2) Think over a convenient bundle with excel.
-3) Input data processing (from excel) and formatting it to the input json (for odeling soft).
+3) Input data processing (from excel) and formatting it to the input json (for modeling soft).
 4) Output data parsing.
